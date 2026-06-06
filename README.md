@@ -2,6 +2,9 @@
 
 ![VFO Controller in action](images/catvfoctrl.jpg) 
 
+📺 [Youtube video: VFO controller in action](https://youtu.be/r33iY527tN8)
+
+
 ---
 <details>
 <summary><b>Читать на русском языке 🇷🇺</b></summary>
@@ -15,16 +18,19 @@
 
 ### 🚀 Технические особенности реализации (по коду)
 
-* **Психофизический тайминг (50 мс):** Опрос дельты энкодера происходит с оптимизированным квантом времени **50 мс**. Пакет частоты отправляется в трансивер только при наличии реального смещения вала. Это обеспечивает плавность настройки без задержек и исключает перегрузку шины CAT.
+* **Оптимизированный тайминг (50 мс) для плавной настройки:** Опрос дельты энкодера происходит с оптимизированным квантом времени **50 мс**. Пакет частоты отправляется в трансивер только при наличии реального смещения вала. Это обеспечивает плавность настройки без задержек и исключает перегрузку шины CAT.
 * **Магнитный энкодер (MT6701):** Высокоточный бесконтактный датчик, настроенный на фиксированные **400 импульсов на оборот**. При шаге 10 Гц это дает **4 кГц на оборот**.
 * **Аппаратный уровень (STM32F103):** 
     * Квадратурный сигнал энкодера обрабатывается аппаратным таймером `TIM1` в 16-битном режиме.
     * Отправка САТ-команд в трансивер автоматизирована через **DMA** (`DMA1_Channel4`), что освобождает процессор от ожидания отправки байт.
     * Входящий САТ-поток принимается по прерываниям во встроенный кольцевой **FIFO-буфер емкостью 128 байт** с обеспечением атомарности операций при чтении.
-* **Аппаратная фильтрация эха:** На однопроводной шине CI-V контроллер автоматически отфильтровывает собственное эхо отправленных пакетов, реагируя только на входящие сообщения, адресованные мастеру (`THIS_MACHINE_ADDRESS = 0xE0`).
+* **Фильтрация эха:** На однопроводной шине CI-V контроллер автоматически отфильтровывает собственное эхо отправленных пакетов, реагируя только на входящие сообщения, адресованные мастеру (`THIS_MACHINE_ADDRESS = 0xE0`).
 * **Двусторонняя синхронизация (Таймаут 500 мс):** Если ручка пульта статична более 500 мс, контроллер запрашивает текущую частоту у Xiegu G90 (команда `0x25 0x00`). Это предотвращает «скачки» частоты при ручной перестройке на самом трансивере или смене диапазона.
 * **Управление шагом (10 Гц / 1 Гц):** Переключение шага реализовано на удержание кнопки LOCK. При возврате с точности 1 Гц на шаг 10 Гц алгоритм автоматически выполняет математическое округление частоты до десятков (`(freq / 10) * 10`), убирая дробный «хвост».
-* **Промышленная безопасность PTT (Anti-Stick Watchdog):** Встроенный программный интегратор кнопок с антидребезгом (100 мс). Для линии PTT реализован таймер безопасности: при непрерывном удержании передачи более **2 минут**, контроллер принудительно отключает PTT по CAT для защиты выходного каскада трансивера от перегрева.
+
+* **Решение проблемы PTT Xiegu G90:** Трансивер не имеет стандартного нормализованного входа PTT (под простую педаль или замыкание на землю). Данный пульт полностью решает эту проблему: вы подключаете обычную педаль/ключ в гнездо 3.5 мм пульта, встроенный оптрон гальванически развязывает цепь, а контроллер мгновенно переводит трансивер на передачу по цифровой шине CAT (команда 0x1C).
+
+* **Защита от залипания PTT (Anti-Stick Watchdog):** Встроенный программный интегратор кнопок с антидребезгом (100 мс). Для линии PTT реализован таймер безопасности: при непрерывном удержании передачи более **2 минут**, контроллер принудительно отключает PTT по CAT для защиты выходного каскада трансивера от перегрева.
 
 ### 🛠 Аппаратная часть (Hardware)
 
@@ -59,15 +65,18 @@ Project Homepage: [https://xflyingcat.ru/catvfoctrl.html](https://xflyingcat.ru/
 
 ### 🚀 Code Architecture
 
-* **Psychophysical Timing (50 ms):** Encoder delta polling occurs with an optimized **50 ms** time quantum. A CAT packet is transmitted only when a physical shaft displacement is detected. This provides absolute tuning smoothness with zero lag and prevents transceiver CAT bus overloading.
+* **Smooth Tuning Response (50 ms):** Encoder delta polling occurs with an optimized **50 ms** time quantum. A CAT packet is transmitted only when a physical shaft displacement is detected. This provides absolute tuning smoothness with zero lag and prevents transceiver CAT bus overloading.
 * **Magnetic Encoder (MT6701):** High-precision contactless 14-bit sensor configured for a fixed **400 pulses per revolution**. With a 10 Hz tuning step, this delivers **4 kHz per revolution**.
 * **Hardware Level (STM32F103):** 
     * Quadrature encoder signals decoded via hardware `TIM1` timer peripheral in 16-bit mode.
     * Outgoing CAT commands handled smoothly using hardware **DMA** (`DMA1_Channel4`), bypassing CPU wait cycles.
     * Incoming CAT stream parsed via an interrupt-driven ring **FIFO buffer (128 bytes)** with atomic read operation locks.
-* **Hardware Echo Filtering:** On the single-wire CI-V bus, the controller automatically filters out its own transmitted echo packets by validating the destination address (`THIS_MACHINE_ADDRESS = 0xE0`).
+* **Echo Filtering:** On the single-wire CI-V bus, the controller automatically filters out its own transmitted echo packets by validating the destination address (`THIS_MACHINE_ADDRESS = 0xE0`).
 * **Bidirectional Sync (500 ms Timeout):** If the VFO knob is idle for >500 ms, the controller automatically polls the Xiegu G90 for its current frequency (using advanced `0x25 0x00` command). This prevents frequency "jumps" if you change bands directly on the radio.
 * **Step Control (10 Hz / 1 Hz):** Step size switching is bound to a long press of the LOCK button. When returning to 10 Hz, the frequency is automatically rounded to the nearest tens of Hz (`(freq / 10) * 10`) to clean up fractional offsets.
+
+* **Xiegu G90 Non-Normalized PTT Fix:** The stock transceiver lacks a standard, normalized PTT input for simple footswitches or ground-keying. This controller completely fixes the issue: you plug any standard pedal into the VFO's 3.5mm jack, an onboard optocoupler provides full galvanic isolation, and the MCU instantly triggers transmission via digital CAT commands (0x1C command).
+
 * **Industrial Grade PTT Safety (Anti-Stick Watchdog):** Advanced integration-based debounce algorithm (100 ms). The PTT line features a built-in safety watchdog: if the PTT remains engaged for more than **2 minutes**, the transmission is forcefully aborted via CAT to protect the radio's PA stage from overheating.
 
 ### 🛠 Hardware Specifications
