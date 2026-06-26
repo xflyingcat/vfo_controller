@@ -44,6 +44,8 @@ Src/cat_proto.c \
 Src/keypad.c \
 Src/serial.c \
 Src/utils.c \
+Src/soft_i2c.c \
+Src/mt6701.c \
 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio_ex.c \
 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.c \
 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.c \

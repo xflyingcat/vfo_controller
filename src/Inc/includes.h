@@ -7,6 +7,7 @@
 #include "serial.h"
 #include "cat_proto.h"
 #include "utils.h"
-
+#include "soft_i2c.h"
+#include "mt6701.h"
 #endif
 

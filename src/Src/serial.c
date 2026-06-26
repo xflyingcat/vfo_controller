@@ -33,38 +33,38 @@ static int fifo_push(SIMPLE_FIFO *fifo, unsigned char data)
 
 void serial_write(uint8_t *buf, int size)
 {
-   HAL_UART_Transmit_DMA(&huart1, buf, size); 
+    HAL_UART_Transmit_DMA(&huart1, buf, size);
 }
 
 int serial_get_buff(unsigned char* buff, int buffsize)
 {
-  unsigned int cnt;
+    unsigned int cnt;
 
-  UART_HandleTypeDef *huart = &huart1;
+    UART_HandleTypeDef *huart = &huart1;
 
-  for (cnt = 0; cnt < buffsize; ++cnt)
-  {
-
-   __disable_irq();
-
-    if(!fifo_pop(&uart1_rx_fifo, buff + cnt))
+    for (cnt = 0; cnt < buffsize; ++cnt)
     {
-      HAL_UART_Receive_IT(huart, &(uart1_rx_fifo.dummy), 1);
-      __enable_irq();
-      break;
-    }
 
-    __enable_irq();
-  }
-  return cnt;
+        __disable_irq();
+
+        if(!fifo_pop(&uart1_rx_fifo, buff + cnt))
+        {
+            HAL_UART_Receive_IT(huart, &(uart1_rx_fifo.dummy), 1);
+            __enable_irq();
+            break;
+        }
+
+        __enable_irq();
+    }
+    return cnt;
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-  if(huart == &huart1)
-  {
-    fifo_push(&uart1_rx_fifo,(huart->Instance->DR & 0xFF));
-    HAL_UART_Receive_IT((UART_HandleTypeDef*)huart, &(uart1_rx_fifo.dummy), 1);
-  }
+    if(huart == &huart1)
+    {
+        fifo_push(&uart1_rx_fifo,(huart->Instance->DR & 0xFF));
+        HAL_UART_Receive_IT((UART_HandleTypeDef*)huart, &(uart1_rx_fifo.dummy), 1);
+    }
 }
 

@@ -11,6 +11,12 @@ int32_t get_delta(void);
 
 void setup(void)
 {
+
+  mt6701_init();
+  //mt6701_eeprom_check_and_burn();
+  mt6701_configure(100, 1);
+  mt6701_deinit();   
+  
   HAL_TIM_Encoder_Start(&htim1, TIM_CHANNEL_ALL);
   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_SET);
