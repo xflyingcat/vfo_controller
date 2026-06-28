@@ -40,7 +40,7 @@
 * **Корпус:** Литой алюминиевый экранированный корпус **Gainta G104** с  гермовводом (дело тут не в герметичности, просто удобный способ ввода кабеля).
 * **Кабель:** 
 
-![Cable Assembly](images/catvfoctrl_1.jpg) 
+![Cable Assembly](images/main_view.jpg) 
 
 Единый пучок длиной 0.5 м (Питание DC, CAT Jack 3.5мм(штеккер), PTT Jack 3.5мм(гнездо)), введенный через гермоввод.
 * **PCB** Проект будущей печатной платы представлен в формате **KiCad**. Плата уже разработана и совсем недавно заказано производство. 
@@ -87,7 +87,7 @@ Project Homepage: [https://xflyingcat.ru/catvfoctrl.html](https://xflyingcat.ru/
 * **Enclosure:** Die-cast aluminum shielded **Gainta G104** housing.
 * **Cable Assembly:** 
 
-![Cable Assembly](images/catvfoctrl_1.jpg) 
+![Cable Assembly](images/main_view.jpg) 
 
 
 Integrated 0.5-meter harness (DC Power, CAT 3.5mm Jack/Plug, PTT 3.5mm Jack/Socket) routed via a cable gland.
