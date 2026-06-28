@@ -43,9 +43,11 @@
 ![Cable Assembly](images/main_view.jpg) 
 
 Единый пучок длиной 0.5 м (Питание DC, CAT Jack 3.5мм(штеккер), PTT Jack 3.5мм(гнездо)), введенный через гермоввод.
-* **PCB** Проект будущей печатной платы представлен в формате **KiCad**. Плата уже разработана и совсем недавно заказано производство. 
+* **PCB** Проект будущей печатной платы представлен в формате **KiCad**. 
 
 ![New PCB image](images/catvfoctrl_newpcb1.jpg) 
+
+![New PCB image](images/interior.jpg) 
 
 ### 💻 Программное обеспечение процесса разработки (Software)
 
@@ -92,11 +94,12 @@ Project Homepage: [https://xflyingcat.ru/catvfoctrl.html](https://xflyingcat.ru/
 
 Integrated 0.5-meter harness (DC Power, CAT 3.5mm Jack/Plug, PTT 3.5mm Jack/Socket) routed via a cable gland.
 
-* **PCB** is presented in **KiCad** format. PCB manufacturing just ordered.
+* **PCB** is presented in **KiCad** format.
 
 
 ![New PCB image](images/catvfoctrl_newpcb1.jpg) 
 
+![New PCB image](images/interior.jpg) 
 
 ### 💻 Software Stack
 
